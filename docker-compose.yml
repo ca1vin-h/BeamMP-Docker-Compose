@@ -1,0 +1,33 @@
+services:
+  beammp-server:
+    image: rouhim/beammp-server
+    build:
+      context: .
+      dockerfile: Containerfile
+    stdin_open: true
+    tty: true
+    environment:
+      - BEAMMP_PRIVATE=true
+      - BEAMMP_MAX_CARS=2
+      - BEAMMP_MAX_PLAYERS=5  # Default value, change if needed
+      - BEAMMP_MAP=/levels/west_coast_usa/info.json
+      - BEAMMP_NAME=BeamMP Sage Server
+      - BEAMMP_DESCRIPTION=Sage BeamMP server
+      - BEAMMP_PORT=30814
+      - BEAMMP_DEBUG=false
+      - BEAMMP_AUTH_KEY=<insert key here>
+      - TZ=EST
+    volumes:
+      # Map a custom ServerConfig.toml file to the container, this is optional
+      #- ./ServerConfig.toml:/beammp/ServerConfig.toml
+      # Just move all the client mods you want to add into this folder
+      - ./client-mods:/beammp/Resources/Client
+      # All server mods belong here
+      - ./server-mods:/beammp/Resources/Server
+    ports:
+      - "30814:30814/tcp"
+      - "30814:30814/udp"
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "50m"
